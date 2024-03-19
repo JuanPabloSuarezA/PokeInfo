@@ -9,11 +9,6 @@ import PokeCard from "./components/Card/PokeCard";
 import { Button, Form, Select, Card } from "antd";
 const { Meta } = Card;
 function App() {
-  const generarNot = () => {
-    if ("serviceWorker" in navigator) {
-      send().catch((err) => console.error(err));
-    }
-  };
 
   const [pokemonData, setPokemonData] = useState([]);
 
@@ -55,11 +50,6 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Lista de pokemons</h1>
-
-        <Button type="primary" onClick={generarNot}>
-          Notificación
-        </Button>
-
         {loading ? (
           <h1>Loading...</h1>
         ) : (
@@ -79,43 +69,6 @@ function App() {
       </header>
     </div>
   );
-}
-
-const publicVapidKey =
-  "BH-nSg8sAoMgB9c0qMdxW5-CgyF6piyPcnJjZD0eq6ELgQsdLrgBu5OLmlemeGABSs2r9U7nDN7vWJX3eVV42OE";
-
-// Registra el sw, la push y la envia
-async function send() {
-  console.log("Registrando el service worker");
-
-  const register = await navigator.serviceWorker.register(
-    "./service-worker.js",
-    {
-      scope: "/",
-    }
-  );
-  console.log("Service worker registrado....");
-
-  console.log("Registrado el push");
-
-  const subscription = await register.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: publicVapidKey,
-  });
-
-  console.log("Push registrada");
-
-  // enviar la notificacion push
-  console.log("enviando push...");
-
-  await fetch("https://serverpwapoke.herokuapp.com/notificacion", {
-    method: "POST",
-    body: JSON.stringify(subscription),
-    headers: {
-      "content-type": "application/json",
-    },
-  });
-  console.log("Push enviada");
 }
 
 export default App;
